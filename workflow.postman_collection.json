@@ -1,0 +1,265 @@
+{
+	"info": {
+		"_postman_id": "a6794a6f-2fc6-4789-a59e-1e39440f42c4",
+		"name": "workflow",
+		"description": "workflow platform API test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "获取所有流程的定义",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d490fe70-c636-446b-9b83-a7710c10ea93",
+						"exec": [
+							"tests[\"Login response code\"] = responseCode.code === 200;",
+							"",
+							"tests[\"response time less than 500ms\"] = responseTime < 500;",
+							"",
+							"tests[\"response has bizid\"] = responseBody.has(\"bizid\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{mainUrl}}/v1/processdef",
+					"host": [
+						"{{mainUrl}}"
+					],
+					"path": [
+						"v1",
+						"processdef"
+					]
+				},
+				"description": "processdef API"
+			},
+			"response": []
+		},
+		{
+			"name": "登录页面",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "154edf88-b5a5-4b13-b565-2dfe3cb8de01",
+						"exec": [
+							"tests[\"Login response code\"] = responseCode.code === 200;",
+							"",
+							"tests[\"response time less than 500ms\"] = responseTime < 500;",
+							"",
+							"tests[\"response body has password\"] = responseBody.has(\"password\");",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{mainUrl}}",
+					"host": [
+						"{{mainUrl}}"
+					]
+				},
+				"description": "Login request"
+			},
+			"response": []
+		},
+		{
+			"name": "获取单个流程的定义",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a9b43c6f-b5fd-46b3-a3cf-018d26a6c11a",
+						"exec": [
+							"tests[\"Login response code\"] = responseCode.code === 200;",
+							"",
+							"tests[\"response time less than 500ms\"] = responseTime < 500;",
+							"",
+							"tests[\"response body has password\"] = responseBody.has(data.processId);",
+							"",
+							"var schema = {",
+							"    \"type\":\"object\",",
+							"    \"required\":[\"Process\"],",
+							"    \"properties\":{",
+							"        \"type\":\"object\",",
+							"        \"required\":[\"processName\", \"processId\", \"nodes\"],",
+							"        \"properties\":{",
+							"            \"processName\":{",
+							"                \"type\":\"String\"",
+							"            },",
+							"            \"processId\":{",
+							"                \"type\":\"object\"",
+							"            },",
+							"            \"nodes\":{",
+							"                \"type\":\"array\",",
+							"                \"required\":[\"nodeId\", \"nodeName\", \"sendMode\"],",
+							"                \"properties\":{",
+							"                    \"nodeId\":{",
+							"                        \"type\":\"string\"",
+							"                    },",
+							"                    \"nodeName\":{",
+							"                        \"type\":\"string\"",
+							"                    },",
+							"                    \"sendMode\":{",
+							"                        \"type\":\"string\"",
+							"                    }",
+							"                }",
+							"            }",
+							"        }",
+							"    }",
+							"}",
+							"var jsonResponseData = xml2Json(responseBody);",
+							"tests[\"validate json formate\"] = tv4.validate(jsonResponseData, schema);",
+							"console.log(\"validate error:\", tv4.error);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{mainUrl}}/v1/processdef/{{processId}}",
+					"host": [
+						"{{mainUrl}}"
+					],
+					"path": [
+						"v1",
+						"processdef",
+						"{{processId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取所有流程列表",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c3db2fe-6478-4e5b-80d7-83acd6627e62",
+						"exec": [
+							"tests[\"response time less than 500ms\"] = responseTime < 500;",
+							"",
+							"tests[\"response successful\"] = responseCode.code === 200;",
+							"",
+							"",
+							"var schema = {",
+							"    \"type\":\"object\",",
+							"    \"required\":[\"ArrayList\"],",
+							"    \"properties\":{",
+							"        \"ArrayList\":{",
+							"            \"type\":\"object\",",
+							"            \"required\":[\"item\"],",
+							"            \"properties\":{",
+							"                \"item\":{",
+							"                    \"type\":\"object\",",
+							"                    \"required\":[",
+							"                        \"processName\",",
+							"                        \"state\"",
+							"                        ],",
+							"                    \"properties\":{",
+							"                        \"processName\":{",
+							"                            \"type\":\"string\"",
+							"                        },",
+							"                        \"state\":{",
+							"                            \"type\":\"integer\",",
+							"                            \"minimum\":1",
+							"                        }",
+							"                    }",
+							"                }",
+							"            }",
+							"        }",
+							"    }",
+							"}",
+							"var jsonObject = xml2Json(responseBody);",
+							"tests[\"validate response body is Json\"] = tv4.validate(jsonObject, schema);",
+							"    "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{mainUrl}}/v1/process?state=0&processId=cpyk_process",
+					"host": [
+						"{{mainUrl}}"
+					],
+					"path": [
+						"v1",
+						"process"
+					],
+					"query": [
+						{
+							"key": "state",
+							"value": "0"
+						},
+						{
+							"key": "processId",
+							"value": "cpyk_process"
+						},
+						{
+							"key": "userId",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
